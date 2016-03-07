@@ -27,6 +27,7 @@ import io.moquette.spi.impl.ProtocolProcessor;
 import io.moquette.spi.security.IAuthenticator;
 import io.moquette.spi.security.IAuthorizator;
 import io.moquette.spi.security.ISslContextCreator;
+import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,6 +147,13 @@ public class Server {
             throw new IllegalStateException("Can't publish on a server is not yet started");
         }
         m_processor.internalPublish(msg);
+    }
+
+    public Channel getChannelByClientId(String clientID) {
+        if (!m_initialized) {
+            throw new IllegalStateException("Server is not yet started");
+        }
+        return m_processor.getChannelByClientId(clientID);
     }
     
     public void stopServer() {

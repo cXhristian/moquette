@@ -717,7 +717,14 @@ public class ProtocolProcessor {
             subscribeSingleTopic(subscription);
         }
     }
-    
+
+    public Channel getChannelByClientId(String clientID) {
+        if(m_clientIDs.containsKey(clientID)) {
+            return m_clientIDs.get(clientID).channel;
+        }
+        return null;
+    }
+
     private boolean subscribeSingleTopic(final Subscription newSubscription) {
         subscriptions.add(newSubscription.asClientTopicCouple());
 
