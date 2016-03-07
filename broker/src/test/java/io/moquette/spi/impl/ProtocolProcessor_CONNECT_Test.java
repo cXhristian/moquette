@@ -78,7 +78,7 @@ public class ProtocolProcessor_CONNECT_Test {
         subscriptions = new SubscriptionsStore();
         subscriptions.init(m_sessionStore);
         m_processor = new ProtocolProcessor();
-        m_processor.init(subscriptions, m_messagesStore, m_sessionStore, m_mockAuthenticator, true,
+        m_processor.init(subscriptions, m_messagesStore, m_sessionStore, m_mockAuthenticator, true, true,
                 new PermitAllAuthorizator(), ProtocolProcessorTest.NO_OBSERVERS_INTERCEPTOR);
     }
 
@@ -170,7 +170,7 @@ public class ProtocolProcessor_CONNECT_Test {
     @Test
     public void prohibitAnonymousClient() {
         connMsg.setClientID("123");
-        m_processor.init(subscriptions, m_messagesStore, m_sessionStore, m_mockAuthenticator, false,
+        m_processor.init(subscriptions, m_messagesStore, m_sessionStore, m_mockAuthenticator, false, true,
                 new PermitAllAuthorizator(), ProtocolProcessorTest.NO_OBSERVERS_INTERCEPTOR);
 
         //Exercise
@@ -185,7 +185,7 @@ public class ProtocolProcessor_CONNECT_Test {
         connMsg.setClientID("123");
         connMsg.setUserFlag(true);
         connMsg.setUsername(ProtocolProcessorTest.TEST_USER + "_fake");
-        m_processor.init(subscriptions, m_messagesStore, m_sessionStore, m_mockAuthenticator, false,
+        m_processor.init(subscriptions, m_messagesStore, m_sessionStore, m_mockAuthenticator, false, true,
                 new PermitAllAuthorizator(), ProtocolProcessorTest.NO_OBSERVERS_INTERCEPTOR);
 
         //Exercise
@@ -198,7 +198,7 @@ public class ProtocolProcessor_CONNECT_Test {
     @Test
     public void acceptAnonymousClient() {
         connMsg.setClientID("123");
-        m_processor.init(subscriptions, m_messagesStore, m_sessionStore, m_mockAuthenticator, true,
+        m_processor.init(subscriptions, m_messagesStore, m_sessionStore, m_mockAuthenticator, true, true,
                 new PermitAllAuthorizator(), ProtocolProcessorTest.NO_OBSERVERS_INTERCEPTOR);
 
         //Exercise
@@ -210,7 +210,7 @@ public class ProtocolProcessor_CONNECT_Test {
 
     @Test
     public void connectWithCleanSessionUpdateClientSession() throws InterruptedException {
-        m_processor.init(subscriptions, m_messagesStore, m_sessionStore, m_mockAuthenticator, true,
+        m_processor.init(subscriptions, m_messagesStore, m_sessionStore, m_mockAuthenticator, true, true,
                 new PermitAllAuthorizator(), ProtocolProcessorTest.NO_OBSERVERS_INTERCEPTOR);
 
         //first connect with clean session true
