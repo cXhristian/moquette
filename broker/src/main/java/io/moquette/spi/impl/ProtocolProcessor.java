@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
+import io.moquette.BrokerConstants;
 import io.moquette.server.ConnectionDescriptor;
 import io.moquette.server.netty.AutoFlushHandler;
 import io.moquette.server.netty.NettyUtils;
@@ -100,6 +101,7 @@ public class ProtocolProcessor {
     protected ConcurrentMap<String, ConnectionDescriptor> m_clientIDs;
     private SubscriptionsStore subscriptions;
     private boolean allowAnonymous;
+    private boolean publishToSubscribers;
     private IAuthorizator m_authorizator;
     private IMessagesStore m_messagesStore;
     private ISessionsStore m_sessionsStore;
@@ -123,13 +125,14 @@ public class ProtocolProcessor {
      * @param interceptor to notify events to an intercept handler
      */
     void init(SubscriptionsStore subscriptions, IMessagesStore storageService,
-              ISessionsStore sessionsStore,
-              IAuthenticator authenticator,
-              boolean allowAnonymous, IAuthorizator authorizator, BrokerInterceptor interceptor) {
+              ISessionsStore sessionsStore, IAuthenticator authenticator,
+              boolean allowAnonymous, boolean publishToSubscribers,
+              IAuthorizator authorizator, BrokerInterceptor interceptor) {
         this.m_clientIDs = new ConcurrentHashMap<>();
         this.m_interceptor = interceptor;
         this.subscriptions = subscriptions;
         this.allowAnonymous = allowAnonymous;
+        this.publishToSubscribers = publishToSubscribers;
         m_authorizator = authorizator;
         LOG.trace("subscription tree on init {}", subscriptions.dumpTree());
         m_authenticator = authenticator;
@@ -325,6 +328,11 @@ public class ProtocolProcessor {
         String user = NettyUtils.userName(channel);
         if (!m_authorizator.canWrite(topic, user, clientID)) {
             LOG.debug("topic {} doesn't have write credentials", topic);
+            return;
+        }
+        if(!publishToSubscribers) {
+            LOG.debug("Publishing to subscribers has been disabled");
+            m_interceptor.notifyTopicPublished(msg, clientID);
             return;
         }
         final AbstractMessage.QOSType qos = msg.getQos();

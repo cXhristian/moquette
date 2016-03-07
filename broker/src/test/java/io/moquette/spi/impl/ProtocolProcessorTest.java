@@ -91,7 +91,7 @@ public class ProtocolProcessorTest {
         subscriptions = new SubscriptionsStore();
         subscriptions.init(memStorage.sessionsStore());
         m_processor = new ProtocolProcessor();
-        m_processor.init(subscriptions, m_messagesStore, m_sessionStore, m_mockAuthenticator, true,
+        m_processor.init(subscriptions, m_messagesStore, m_sessionStore, m_mockAuthenticator, true, true,
                 new PermitAllAuthorizator(), NO_OBSERVERS_INTERCEPTOR);
     }
 
@@ -117,7 +117,7 @@ public class ProtocolProcessorTest {
         MemoryStorageService storageService = new MemoryStorageService();
         storageService.initStore();
         subs.init(storageService.sessionsStore());
-        m_processor.init(subs, m_messagesStore, m_sessionStore, null, true, new PermitAllAuthorizator(), NO_OBSERVERS_INTERCEPTOR);
+        m_processor.init(subs, m_messagesStore, m_sessionStore, null, true, true, new PermitAllAuthorizator(), NO_OBSERVERS_INTERCEPTOR);
         ConnectMessage connectMessage = new ConnectMessage();
         connectMessage.setProtocolVersion((byte) 3);
         connectMessage.setClientID(FAKE_CLIENT_ID);
@@ -164,7 +164,7 @@ public class ProtocolProcessorTest {
         MemoryStorageService storageService = new MemoryStorageService();
         storageService.initStore();
         subs.init(storageService.sessionsStore());
-        m_processor.init(subs, m_messagesStore, m_sessionStore, null, true, new PermitAllAuthorizator(), NO_OBSERVERS_INTERCEPTOR);
+        m_processor.init(subs, m_messagesStore, m_sessionStore, null, true, true, new PermitAllAuthorizator(), NO_OBSERVERS_INTERCEPTOR);
 
         EmbeddedChannel firstReceiverChannel = new EmbeddedChannel();
         ConnectMessage connectMessage = new ConnectMessage();
@@ -231,7 +231,7 @@ public class ProtocolProcessorTest {
 
         IAuthorizator mockAuthorizator = mock(IAuthorizator.class);
         when(mockAuthorizator.canRead(eq(FAKE_TOPIC), eq(fakeUserName), eq(FAKE_CLIENT_ID))).thenReturn(false);
-        m_processor.init(subscriptions, m_messagesStore, m_sessionStore, m_mockAuthenticator, true,
+        m_processor.init(subscriptions, m_messagesStore, m_sessionStore, m_mockAuthenticator, true, true,
                 mockAuthorizator, NO_OBSERVERS_INTERCEPTOR);
 
         //Exercise
@@ -325,7 +325,7 @@ public class ProtocolProcessorTest {
         subs.init(storageService.sessionsStore());
 
         //simulate a connect that register a clientID to an IoSession
-        m_processor.init(subs, m_messagesStore, m_sessionStore, null, true, new PermitAllAuthorizator(), NO_OBSERVERS_INTERCEPTOR);
+        m_processor.init(subs, m_messagesStore, m_sessionStore, null, true, true, new PermitAllAuthorizator(), NO_OBSERVERS_INTERCEPTOR);
         ConnectMessage connectMessage = new ConnectMessage();
         connectMessage.setClientID(FAKE_PUBLISHER_ID);
         connectMessage.setProtocolVersion((byte) 3);
@@ -367,7 +367,7 @@ public class ProtocolProcessorTest {
         retainedMessage.setClientID(FAKE_PUBLISHER_ID);
         m_messagesStore.storePublishForFuture(retainedMessage);
 
-        m_processor.init(subs, m_messagesStore, m_sessionStore, null, true, new PermitAllAuthorizator(), NO_OBSERVERS_INTERCEPTOR);
+        m_processor.init(subs, m_messagesStore, m_sessionStore, null, true, true, new PermitAllAuthorizator(), NO_OBSERVERS_INTERCEPTOR);
         ConnectMessage connectMessage = new ConnectMessage();
         connectMessage.setClientID(FAKE_PUBLISHER_ID);
         connectMessage.setProtocolVersion((byte) 3);
@@ -389,7 +389,7 @@ public class ProtocolProcessorTest {
         List<Subscription> inactiveSubscriptions = Collections.singletonList(inactiveSub);
         when(mockedSubscriptions.matches(eq("/topic"))).thenReturn(inactiveSubscriptions);
         m_processor = new ProtocolProcessor();
-        m_processor.init(mockedSubscriptions, m_messagesStore, m_sessionStore, null, true, new PermitAllAuthorizator(),
+        m_processor.init(mockedSubscriptions, m_messagesStore, m_sessionStore, null, true, true, new PermitAllAuthorizator(),
                 NO_OBSERVERS_INTERCEPTOR);
         
         //Exercise
@@ -479,7 +479,7 @@ public class ProtocolProcessorTest {
                 publishedForwarded.add(msgToStore);
             }
         };
-        processor.init(subscriptions, memoryMessageStore, sessionsStore, null, true, null, NO_OBSERVERS_INTERCEPTOR);
+        processor.init(subscriptions, memoryMessageStore, sessionsStore, null, true, true, null, NO_OBSERVERS_INTERCEPTOR);
         //just to activate the two sessions
         processor.m_clientIDs.put("Sub A", new ConnectionDescriptor("Sub A", null, true));
         processor.m_clientIDs.put("Sub B", new ConnectionDescriptor("Sub B", null, true));
