@@ -143,7 +143,7 @@ public class SimpleMessaging {
         }
 
         boolean allowAnonymous = Boolean.parseBoolean(props.getProperty(BrokerConstants.ALLOW_ANONYMOUS_PROPERTY_NAME, "true"));
-        boolean publishToSubscribers = Boolean.parseBoolean(props.getProperty(BrokerConstants.PUBLISH_TO_CONSUMERS, "false"));
+        boolean publishToSubscribers = Boolean.parseBoolean(props.getProperty(BrokerConstants.PUBLISH_TO_CONSUMERS, "true"));
         m_processor.init(
                 subscriptions, messagesStore, sessionsStore, authenticator,
                 allowAnonymous, publishToSubscribers, authorizator, m_interceptor
