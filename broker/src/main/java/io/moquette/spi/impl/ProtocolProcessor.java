@@ -341,7 +341,7 @@ public class ProtocolProcessor {
         }
         if(!publishToSubscribers) {
             LOG.debug("Publishing to subscribers has been disabled");
-            m_interceptor.notifyTopicPublished(msg, clientID);
+            m_interceptor.notifyTopicPublished(msg, clientID, username);
             return;
         }
         final AbstractMessage.QOSType qos = msg.getQos();
