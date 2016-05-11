@@ -438,7 +438,7 @@ public class ProtocolProcessor {
      * Flood the subscribers with the message to notify. MessageID is optional and should only used for QoS 1 and 2
      * */
     void route2Subscribers(IMessagesStore.StoredMessage pubMsg) {
-        if(!publishToSubscribers) {
+        if(!publishToSubscribers && !pubMsg.getClientID().equals("BROKER_SELF")) {
             LOG.debug("Publishing to subscribers has been disabled");
             return;
         }
