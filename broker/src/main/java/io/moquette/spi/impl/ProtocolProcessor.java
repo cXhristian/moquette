@@ -339,11 +339,7 @@ public class ProtocolProcessor {
             LOG.debug("topic {} doesn't have write credentials", topic);
             return;
         }
-        if(!publishToSubscribers) {
-            LOG.debug("Publishing to subscribers has been disabled");
-            m_interceptor.notifyTopicPublished(msg, clientID, username);
-            return;
-        }
+
         final AbstractMessage.QOSType qos = msg.getQos();
         final Integer messageID = msg.getMessageID();
         LOG.info("PUBLISH from clientID <{}> on topic <{}> with QoS {}", clientID, topic, qos);
@@ -442,6 +438,10 @@ public class ProtocolProcessor {
      * Flood the subscribers with the message to notify. MessageID is optional and should only used for QoS 1 and 2
      * */
     void route2Subscribers(IMessagesStore.StoredMessage pubMsg) {
+        if(!publishToSubscribers) {
+            LOG.debug("Publishing to subscribers has been disabled");
+            return;
+        }
         final String topic = pubMsg.getTopic();
         final AbstractMessage.QOSType publishingQos = pubMsg.getQos();
         final ByteBuffer origMessage = pubMsg.getMessage();
